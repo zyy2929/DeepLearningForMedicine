@@ -66,7 +66,7 @@ test_df_path = 'chest_xray_origin/test.csv'
 root_dir = 'chest_xray_origin/all/'
 
 bs = 10
-epochs = 100
+epochs = 200
 
 
 ###################################
@@ -130,9 +130,16 @@ resnet152 = models.resnet152(num_classes=2)
 
 # training process
 model = resnet152
+
+LOAD_MODEL = True
+MODEL_PATH = '../models/resnet152_model_100.pth'
+
+if LOAD_MODEL:
+    model.load_state_dict(torch.load(MODEL_PATH))
+
 model.to(device)
 
-start_epoch = 1
+start_epoch = 101
 best_val_loss = np.inf
 
 history = {"train_loss":[], "train_acc":[],
@@ -177,7 +184,7 @@ for epoch in range(start_epoch, epochs + 1):
 print('time elapsed:', time.time() - start_time)
 
 # save results
-with open("history_resnet152.pkl", "wb") as fout:
+with open("history_resnet152_101.pkl", "wb") as fout:
     pickle.dump(history, fout)
 
 
@@ -193,6 +200,13 @@ densenet161 = models.densenet161(num_classes=2)
 
 # training process
 model = densenet161
+
+LOAD_MODEL = True
+MODEL_PATH = '../models/densenet161_model_100.pth'
+
+if LOAD_MODEL:
+    model.load_state_dict(torch.load(MODEL_PATH))
+
 model.to(device)
 
 start_epoch = 1
@@ -204,6 +218,8 @@ history = {"train_loss":[], "train_acc":[],
 optimizer = optim.Adam(model.parameters())
 
 start_time = time.time()
+
+valid_or_test = 'validation'
 
 for epoch in range(start_epoch, epochs + 1):
 
@@ -222,7 +238,7 @@ for epoch in range(start_epoch, epochs + 1):
     history["valid_probas_list"].append(valid_probas_list)
     history["valid_auc_score"].append(valid_auc_score)
 
-    print('{}: loss: {:.4f} acc: {:.4f} auc: {:.4f}'.format('validation', valid_loss, valid_acc, valid_auc_score))
+    print('{}: loss: {:.4f} acc: {:.4f} auc: {:.4f}'.format(valid_or_test, valid_loss, valid_acc, valid_auc_score))
     print()
 
     # save models
