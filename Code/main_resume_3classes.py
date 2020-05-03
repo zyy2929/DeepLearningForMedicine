@@ -54,19 +54,19 @@ else:
 ###################################
 
 # # local
-# train_df_path = '../../chest_xray_origin/train.csv'
-# val_df_path = '../../chest_xray_origin/val.csv'
+# train_df_path = '../../chest_xray_origin/train_3.csv'
+# val_df_path = '../../chest_xray_origin/val_3.csv'
 # root_dir = '../../chest_xray_origin/all/'
 
 # hpc
-train_df_path = 'chest_xray_origin/train.csv'
-val_df_path = 'chest_xray_origin/val.csv'
-test_df_path = 'chest_xray_origin/test.csv'
+train_df_path = 'chest_xray_origin/train_3.csv'
+val_df_path = 'chest_xray_origin/val_3.csv'
+test_df_path = 'chest_xray_origin/test_3.csv'
 
 root_dir = 'chest_xray_origin/all/'
 
 bs = 10
-epochs = 200
+epochs = 100
 
 
 ###################################
@@ -143,7 +143,7 @@ best_val_loss = np.inf
 
 history = {"train_loss":[], "train_acc":[],
            "valid_loss":[], "valid_acc":[], "valid_preds_list":[],
-           "valid_truelabels_list":[], "valid_probas_list":[], "valid_auc_score":[]}
+           "valid_truelabels_list":[], "valid_probas_list":[]}
 optimizer = optim.Adam(model.parameters())
 
 start_time = time.time()
@@ -157,13 +157,13 @@ for epoch in range(start_epoch, epochs + 1):
     print('epoch: ', epoch)
     print('{}: loss: {:.4f} acc: {:.4f}'.format('training', train_loss, train_acc))
 
-    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list, valid_auc_score = validation(epoch, model, optimizer, valid_criterion, valid_loader, device)
+    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list = validation(epoch, model, optimizer, valid_criterion, valid_loader, device)
     history["valid_loss"].append(valid_loss)
     history["valid_acc"].append(valid_acc)
     history["valid_preds_list"].append(valid_preds_list)
     history["valid_truelabels_list"].append(valid_truelabels_list)
     history["valid_probas_list"].append(valid_probas_list)
-    history["valid_auc_score"].append(valid_auc_score)
+    #history["valid_auc_score"].append(valid_auc_score)
 
     print('{}: loss: {:.4f} acc: {:.4f} auc: {:.4f}'.format('validation', valid_loss, valid_acc, valid_auc_score))
     print()
@@ -173,7 +173,7 @@ for epoch in range(start_epoch, epochs + 1):
     best_val_loss = min(valid_loss, best_val_loss)
 
     if is_best:
-        best_model_file = "best_models/resnet152_best_model_" + str(epoch) + ".pth"
+        best_model_file = "best_models/best_resnet" + str(epoch) + ".pth"
         torch.save(model.state_dict(), best_model_file)
 
     model_file = "models/resnet152_model_" + str(epoch) + ".pth"
@@ -183,7 +183,7 @@ for epoch in range(start_epoch, epochs + 1):
 print('time elapsed:', time.time() - start_time)
 
 # save results
-with open("history_resnet152_101.pkl", "wb") as fout:
+with open("history_resnet.pkl", "wb") as fout:
     pickle.dump(history, fout)
 
 
@@ -212,7 +212,7 @@ best_val_loss = np.inf
 
 history = {"train_loss":[], "train_acc":[],
            "valid_loss":[], "valid_acc":[], "valid_preds_list":[],
-           "valid_truelabels_list":[], "valid_probas_list":[], "valid_auc_score":[]}
+           "valid_truelabels_list":[], "valid_probas_list":[]}
 optimizer = optim.Adam(model.parameters())
 
 start_time = time.time()
@@ -230,13 +230,13 @@ for epoch in range(start_epoch, epochs + 1):
     print('epoch: ', epoch)
     print('{}: loss: {:.4f} acc: {:.4f}'.format('training', train_loss, train_acc))
 
-    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list, valid_auc_score = validation(epoch, model, optimizer, valid_criterion, valid_loader, device)
+    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list = validation(epoch, model, optimizer, valid_criterion, valid_loader, device)
     history["valid_loss"].append(valid_loss)
     history["valid_acc"].append(valid_acc)
     history["valid_preds_list"].append(valid_preds_list)
     history["valid_truelabels_list"].append(valid_truelabels_list)
     history["valid_probas_list"].append(valid_probas_list)
-    history["valid_auc_score"].append(valid_auc_score)
+    #history["valid_auc_score"].append(valid_auc_score)
 
     print('{}: loss: {:.4f} acc: {:.4f} auc: {:.4f}'.format(valid_or_test, valid_loss, valid_acc, valid_auc_score))
     print()
@@ -246,7 +246,7 @@ for epoch in range(start_epoch, epochs + 1):
     best_val_loss = min(valid_loss, best_val_loss)
 
     if is_best:
-        best_model_file = "best_models/densenet161_best_model_" + str(epoch) + ".pth"
+        best_model_file = "best_models/best_densenet" + str(epoch) + ".pth"
         torch.save(model.state_dict(), best_model_file)
 
     model_file = "models/densenet161_model_" + str(epoch) + ".pth"
@@ -256,7 +256,7 @@ for epoch in range(start_epoch, epochs + 1):
 print('time elapsed:', time.time() - start_time)
 
 # save results
-with open("history_densenet152_101.pkl", "wb") as fout:
+with open("history_densenet.pkl", "wb") as fout:
     pickle.dump(history, fout)
 
 
@@ -286,7 +286,7 @@ best_val_loss = np.inf
 
 history = {"train_loss":[], "train_acc":[],
            "valid_loss":[], "valid_acc":[], "valid_preds_list":[],
-           "valid_truelabels_list":[], "valid_probas_list":[], "valid_auc_score":[]}
+           "valid_truelabels_list":[], "valid_probas_list":[]}
 optimizer = optim.Adam(model.parameters())
 
 start_time = time.time()
@@ -304,13 +304,13 @@ for epoch in range(start_epoch, epochs + 1):
     print('epoch: ', epoch)
     print('{}: loss: {:.4f} acc: {:.4f}'.format('training', train_loss, train_acc))
 
-    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list, valid_auc_score = validation(epoch, model, optimizer, valid_criterion, valid_loader, device)
+    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list = validation(epoch, model, optimizer, valid_criterion, valid_loader, device)
     history["valid_loss"].append(valid_loss)
     history["valid_acc"].append(valid_acc)
     history["valid_preds_list"].append(valid_preds_list)
     history["valid_truelabels_list"].append(valid_truelabels_list)
     history["valid_probas_list"].append(valid_probas_list)
-    history["valid_auc_score"].append(valid_auc_score)
+    #history["valid_auc_score"].append(valid_auc_score)
 
     print('{}: loss: {:.4f} acc: {:.4f} auc: {:.4f}'.format(valid_or_test, valid_loss, valid_acc, valid_auc_score))
     print()
@@ -320,7 +320,7 @@ for epoch in range(start_epoch, epochs + 1):
     best_val_loss = min(valid_loss, best_val_loss)
 
     if is_best:
-        best_model_file = "best_models/googlenet_best_model_" + str(epoch) + ".pth"
+        best_model_file = "best_models/best_googlenet" + str(epoch) + ".pth"
         torch.save(model.state_dict(), best_model_file)
 
     model_file = "models/googlenet_model_" + str(epoch) + ".pth"
@@ -330,5 +330,5 @@ for epoch in range(start_epoch, epochs + 1):
 print('time elapsed:', time.time() - start_time)
 
 # save results
-with open("history_googlenet_101.pkl", "wb") as fout:
+with open("history_googlenet.pkl", "wb") as fout:
     pickle.dump(history, fout)
