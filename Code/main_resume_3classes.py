@@ -138,7 +138,7 @@ if LOAD_MODEL:
 
 model.to(device)
 
-start_epoch = 101
+start_epoch = 11
 best_val_loss = np.inf
 
 history = {"train_loss":[], "train_acc":[],
