@@ -1,4 +1,3 @@
-
 ###################################
 ########## import library #########
 ###################################
@@ -125,13 +124,13 @@ print('###################################')
 print('############# ResNet152 ###########')
 print('###################################')
 
-resnet152 = models.resnet152(num_classes=2)
+resnet152 = models.resnet152(num_classes=3)
 
 # training process
 model = resnet152
 
 LOAD_MODEL = True
-MODEL_PATH = '../models/resnet152_model_100.pth'
+# MODEL_PATH = '../models/resnet152_model_100.pth'
 
 if LOAD_MODEL:
     model.load_state_dict(torch.load(MODEL_PATH))
@@ -180,11 +179,12 @@ for epoch in range(start_epoch, epochs + 1):
 
     torch.save(model.state_dict(), model_file)
 
+    # save results
+    with open("history_resnet.pkl", "wb") as fout:
+        pickle.dump(history, fout)
+
 print('time elapsed:', time.time() - start_time)
 
-# save results
-with open("history_resnet.pkl", "wb") as fout:
-    pickle.dump(history, fout)
 
 
 ###################################
@@ -194,13 +194,13 @@ print('###################################')
 print('############ DenseNet161 ##########')
 print('###################################')
 
-densenet161 = models.densenet161(num_classes=2)
+densenet161 = models.densenet161(num_classes=3)
 
 # training process
 model = densenet161
 
-LOAD_MODEL = True
-MODEL_PATH = '../models/densenet161_model_100.pth'
+LOAD_MODEL = False
+# MODEL_PATH = '../models/densenet161_model_100.pth'
 
 if LOAD_MODEL:
     model.load_state_dict(torch.load(MODEL_PATH))
@@ -253,11 +253,12 @@ for epoch in range(start_epoch, epochs + 1):
 
     torch.save(model.state_dict(), model_file)
 
+    # save results
+    with open("history_densenet.pkl", "wb") as fout:
+        pickle.dump(history, fout)
+
 print('time elapsed:', time.time() - start_time)
 
-# save results
-with open("history_densenet.pkl", "wb") as fout:
-    pickle.dump(history, fout)
 
 
 ###################################
@@ -267,14 +268,14 @@ print('###################################')
 print('############# GoogLeNet ###########')
 print('###################################')
 
-googlenet = models.googlenet(num_classes=2)
-googlenet.fc = nn.Linear(1024, 2)
+googlenet = models.googlenet()
+googlenet.fc = nn.Linear(1024, 3)
 
 # training process
 model = googlenet
 
-LOAD_MODEL = True
-MODEL_PATH = '../models/googlenet_model_100.pth'
+LOAD_MODEL = False
+# MODEL_PATH = '../models/googlenet_model_100.pth'
 
 if LOAD_MODEL:
     model.load_state_dict(torch.load(MODEL_PATH))
@@ -327,8 +328,8 @@ for epoch in range(start_epoch, epochs + 1):
 
     torch.save(model.state_dict(), model_file)
 
-print('time elapsed:', time.time() - start_time)
+    # save results
+    with open("history_googlenet.pkl", "wb") as fout:
+        pickle.dump(history, fout)
 
-# save results
-with open("history_googlenet.pkl", "wb") as fout:
-    pickle.dump(history, fout)
+print('time elapsed:', time.time() - start_time)

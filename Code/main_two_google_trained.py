@@ -119,17 +119,17 @@ test_criterion = nn.CrossEntropyLoss(weight=test_weights)
 
 
 ###################################
-###### pretrained ResNet152 #######
+###### pretrained GoogLeNet #######
 ###################################
 print('###################################')
-print('###### pretrained ResNet152 #######')
+print('###### pretrained GoogLeNet #######')
 print('###################################')
 
-resnet152 = models.resnet152(pretrained=True)
-resnet152 = models.resnet152(num_classes=2)
+googlenet = models.googlenet(pretrained=True)
+googlenet.fc = nn.Linear(1024, 2)
 
 # training process
-model = resnet152
+model = googlenet
 model.to(device)
 
 start_epoch = 1
@@ -167,74 +167,15 @@ for epoch in range(start_epoch, epochs + 1):
     best_val_loss = min(valid_loss, best_val_loss)
 
     if is_best:
-        best_model_file = "best_models/resnet152_best_model_" + str(epoch) + ".pth"
+        best_model_file = "best_models/googlenet_pretrained_best_model_" + str(epoch) + ".pth"
         torch.save(model.state_dict(), best_model_file)
 
-    model_file = "models/resnet152_model_" + str(epoch) + ".pth"
+    model_file = "models/googlenet_pretrained__model_" + str(epoch) + ".pth"
 
     torch.save(model.state_dict(), model_file)
 
 print('time elapsed:', time.time() - start_time)
 
 # save results
-with open("history_resnet152.pkl", "wb") as fout:
+with open("history_googlenet_pretrained.pkl", "wb") as fout:
     pickle.dump(history, fout)
-
-
-###################################
-##### pretrained DenseNet161 ######
-###################################
-print('###################################')
-print('##### pretrained DenseNet161 ######')
-print('###################################')
-
-densenet161 = models.densenet161(pretrained=True)
-densenet161 = models.densenet161(num_classes=2)
-
-# training process
-model = densenet161
-model.to(device)
-
-start_epoch = 1
-best_val_loss = np.inf
-
-history = {"train_loss":[], "train_acc":[],
-           "valid_loss":[], "valid_acc":[], "valid_preds_list":[],
-           "valid_truelabels_list":[], "valid_probas_list":[], "valid_auc_score":[]}
-optimizer = optim.Adam(model.parameters())
-
-start_time = time.time()
-
-for epoch in range(start_epoch, epochs + 1):
-
-    train_loss, train_acc = train(epoch, model, optimizer, train_criterion, train_loader, device)
-    history["train_loss"].append(train_loss)
-    history["train_acc"].append(train_acc)
-
-    print('epoch: ', epoch)
-    print('{}: loss: {:.4f} acc: {:.4f}'.format('training', train_loss, train_acc))
-
-    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list, valid_auc_score = validation(epoch, model, optimizer, valid_criterion, valid_loader, device)
-    history["valid_loss"].append(valid_loss)
-    history["valid_acc"].append(valid_acc)
-    history["valid_preds_list"].append(valid_preds_list)
-    history["valid_truelabels_list"].append(valid_truelabels_list)
-    history["valid_probas_list"].append(valid_probas_list)
-    history["valid_auc_score"].append(valid_auc_score)
-
-    print('{}: loss: {:.4f} acc: {:.4f} auc: {:.4f}'.format('validation', valid_loss, valid_acc, valid_auc_score))
-    print()
-
-    # save models
-    is_best = valid_loss < best_val_loss
-    best_val_loss = min(valid_loss, best_val_loss)
-
-    if is_best:
-        best_model_file = "best_models/densenet161_best_model_" + str(epoch) + ".pth"
-        torch.save(model.state_dict(), best_model_file)
-
-    model_file = "models/densenet161_model_" + str(epoch) + ".pth"
-
-    torch.save(model.state_dict(), model_file)
-
-print('time elapsed:', time.time() - start_time)

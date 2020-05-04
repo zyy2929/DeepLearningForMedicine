@@ -66,7 +66,7 @@ test_df_path = 'chest_xray_origin/test.csv'
 root_dir = 'chest_xray_origin/all/'
 
 bs = 10
-epochs = 200
+epochs = 100
 
 
 ###################################
@@ -119,26 +119,19 @@ test_criterion = nn.CrossEntropyLoss(weight=test_weights)
 
 
 ###################################
-############# ResNet152 ###########
+############ ResNet152 ############
 ###################################
 print('###################################')
-print('############# ResNet152 ###########')
+print('############ ResNet152 ############')
 print('###################################')
 
 resnet152 = models.resnet152(num_classes=2)
 
 # training process
 model = resnet152
-
-LOAD_MODEL = True
-MODEL_PATH = '../models/resnet152_model_100.pth'
-
-if LOAD_MODEL:
-    model.load_state_dict(torch.load(MODEL_PATH))
-
 model.to(device)
 
-start_epoch = 101
+start_epoch = 1
 best_val_loss = np.inf
 
 history = {"train_loss":[], "train_acc":[],
@@ -180,31 +173,26 @@ for epoch in range(start_epoch, epochs + 1):
 
     torch.save(model.state_dict(), model_file)
 
+    # save results
+    with open("history_resnet152.pkl", "wb") as fout:
+        pickle.dump(history, fout)
+
 print('time elapsed:', time.time() - start_time)
 
-# save results
-with open("history_resnet152_101.pkl", "wb") as fout:
-    pickle.dump(history, fout)
+
 
 
 ###################################
-########### DenseNet161 ###########
+########## DenseNet161 ############
 ###################################
 print('###################################')
-print('############ DenseNet161 ##########')
+print('########## DenseNet161 ############')
 print('###################################')
 
 densenet161 = models.densenet161(num_classes=2)
 
 # training process
 model = densenet161
-
-LOAD_MODEL = True
-MODEL_PATH = '../models/densenet161_model_100.pth'
-
-if LOAD_MODEL:
-    model.load_state_dict(torch.load(MODEL_PATH))
-
 model.to(device)
 
 start_epoch = 1
@@ -216,10 +204,6 @@ history = {"train_loss":[], "train_acc":[],
 optimizer = optim.Adam(model.parameters())
 
 start_time = time.time()
-
-valid_or_test = 'validation'
-
-
 
 for epoch in range(start_epoch, epochs + 1):
 
@@ -238,7 +222,7 @@ for epoch in range(start_epoch, epochs + 1):
     history["valid_probas_list"].append(valid_probas_list)
     history["valid_auc_score"].append(valid_auc_score)
 
-    print('{}: loss: {:.4f} acc: {:.4f} auc: {:.4f}'.format(valid_or_test, valid_loss, valid_acc, valid_auc_score))
+    print('{}: loss: {:.4f} acc: {:.4f} auc: {:.4f}'.format('validation', valid_loss, valid_acc, valid_auc_score))
     print()
 
     # save models
@@ -253,32 +237,24 @@ for epoch in range(start_epoch, epochs + 1):
 
     torch.save(model.state_dict(), model_file)
 
+    # save results
+    with open("history_densenet161.pkl", "wb") as fout:
+        pickle.dump(history, fout)
+
 print('time elapsed:', time.time() - start_time)
-
-# save results
-with open("history_densenet152_101.pkl", "wb") as fout:
-    pickle.dump(history, fout)
-
 
 ###################################
 ############ GoogLeNet ############
 ###################################
 print('###################################')
-print('############# GoogLeNet ###########')
+print('############ GoogLeNet ############')
 print('###################################')
 
-googlenet = models.googlenet(num_classes=2)
+googlenet = models.googlenet()
 googlenet.fc = nn.Linear(1024, 2)
 
 # training process
 model = googlenet
-
-LOAD_MODEL = True
-MODEL_PATH = '../models/googlenet_model_100.pth'
-
-if LOAD_MODEL:
-    model.load_state_dict(torch.load(MODEL_PATH))
-
 model.to(device)
 
 start_epoch = 1
@@ -290,10 +266,6 @@ history = {"train_loss":[], "train_acc":[],
 optimizer = optim.Adam(model.parameters())
 
 start_time = time.time()
-
-valid_or_test = 'validation'
-
-
 
 for epoch in range(start_epoch, epochs + 1):
 
@@ -312,7 +284,7 @@ for epoch in range(start_epoch, epochs + 1):
     history["valid_probas_list"].append(valid_probas_list)
     history["valid_auc_score"].append(valid_auc_score)
 
-    print('{}: loss: {:.4f} acc: {:.4f} auc: {:.4f}'.format(valid_or_test, valid_loss, valid_acc, valid_auc_score))
+    print('{}: loss: {:.4f} acc: {:.4f} auc: {:.4f}'.format('validation', valid_loss, valid_acc, valid_auc_score))
     print()
 
     # save models
@@ -320,15 +292,15 @@ for epoch in range(start_epoch, epochs + 1):
     best_val_loss = min(valid_loss, best_val_loss)
 
     if is_best:
-        best_model_file = "best_models/googlenet_best_model_" + str(epoch) + ".pth"
+        best_model_file = "best_models/googlenet_pretrained_best_model_" + str(epoch) + ".pth"
         torch.save(model.state_dict(), best_model_file)
 
-    model_file = "models/googlenet_model_" + str(epoch) + ".pth"
+    model_file = "models/googlenet_pretrained__model_" + str(epoch) + ".pth"
 
     torch.save(model.state_dict(), model_file)
 
-print('time elapsed:', time.time() - start_time)
+    # save results
+    with open("history_googlenet_pretrained.pkl", "wb") as fout:
+        pickle.dump(history, fout)
 
-# save results
-with open("history_googlenet_101.pkl", "wb") as fout:
-    pickle.dump(history, fout)
+print('time elapsed:', time.time() - start_time)

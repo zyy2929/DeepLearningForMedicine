@@ -66,7 +66,7 @@ def train(epoch, model, optimizer, criterion, loader, device):
 
     return epoch_loss / len(loader), training_accuracy
 
-def validation(epoch, model, optimizer, criterion, loader, device):
+def validation(epoch, model, optimizer, criterion, loader, device, multiclass=False):
 
     model.eval( )
 
@@ -107,6 +107,13 @@ def validation(epoch, model, optimizer, criterion, loader, device):
         truelabels_list = np.concatenate(truelabels_list)
         preds_list = np.concatenate(preds_list)
 
-        auc_score = metrics.roc_auc_score(truelabels_list, preds_list)
+        if multiclass == False:
+            auc_score = metrics.roc_auc_score(truelabels_list, preds_list)
+
+        else:
+            # Computes the average AUC of all possible pairwise combinations of classes
+            # Insensitive to class imbalance when average == 'macro'
+            auc_score = metrics.roc_auc_score(truelabels_list, probas_list, multi_class='ovo')
+
 
         return running_loss / len(loader), valid_accuracy, preds_list, truelabels_list, probas_list, auc_score
