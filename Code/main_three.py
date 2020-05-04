@@ -156,7 +156,7 @@ for epoch in range(start_epoch, epochs + 1):
     print('epoch: ', epoch)
     print('{}: loss: {:.4f} acc: {:.4f}'.format('training', train_loss, train_acc))
 
-    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list = validation(epoch, model, optimizer, valid_criterion, valid_loader, device)
+    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list = validation(epoch, model, optimizer, valid_criterion, valid_loader, device, multiclass=True)
     history["valid_loss"].append(valid_loss)
     history["valid_acc"].append(valid_acc)
     history["valid_preds_list"].append(valid_preds_list)
@@ -230,7 +230,7 @@ for epoch in range(start_epoch, epochs + 1):
     print('epoch: ', epoch)
     print('{}: loss: {:.4f} acc: {:.4f}'.format('training', train_loss, train_acc))
 
-    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list = validation(epoch, model, optimizer, valid_criterion, valid_loader, device)
+    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list = validation(epoch, model, optimizer, valid_criterion, valid_loader, device, multiclass=True)
     history["valid_loss"].append(valid_loss)
     history["valid_acc"].append(valid_acc)
     history["valid_preds_list"].append(valid_preds_list)
@@ -305,7 +305,7 @@ for epoch in range(start_epoch, epochs + 1):
     print('epoch: ', epoch)
     print('{}: loss: {:.4f} acc: {:.4f}'.format('training', train_loss, train_acc))
 
-    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list = validation(epoch, model, optimizer, valid_criterion, valid_loader, device)
+    valid_loss, valid_acc, valid_preds_list, valid_truelabels_list, valid_probas_list = validation(epoch, model, optimizer, valid_criterion, valid_loader, device, multiclass=True)
     history["valid_loss"].append(valid_loss)
     history["valid_acc"].append(valid_acc)
     history["valid_preds_list"].append(valid_preds_list)
