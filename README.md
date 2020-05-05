@@ -8,4 +8,4 @@ The data we used come from a previous study (https://www.cell.com/cell/fulltext/
 
 In our repository, the data folder contains our train-valid-test splitting information, for both 2 classes and 3 classes. The code folder contains all python code and visualizations that leads to our results. The report folder includes our presentation and paper (still working on it, please come back later).
 
-We used learning rate=0.001, and optimizer=Adam in all models.
+After hyperparameter tuning, We decided to use learning rate=0.001, and optimizer=Adam in all models.
